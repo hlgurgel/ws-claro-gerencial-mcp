@@ -9,13 +9,13 @@ from zeep.transports import AsyncTransport
 
 from .config import Entidade, montar_url
 
-_TIMEOUT = httpx.Timeout(30.0, connect=15.0)
-_TRANSPORTE = AsyncTransport(timeout=_TIMEOUT.seconds)
+_TIMEOUT_SEGUNDOS = 30
 
 
 def _criar_cliente(wsdl_url: str) -> AsyncClient:
     """Cria um cliente SOAP assíncrono para uma URL WSDL."""
-    return AsyncClient(wsdl_url + "?WSDL", transport=_TRANSPORTE)
+    transporte = AsyncTransport(timeout=_TIMEOUT_SEGUNDOS)
+    return AsyncClient(wsdl_url + "?WSDL", transport=transporte)
 
 
 async def chamar_enviar_registros(
@@ -29,21 +29,18 @@ async def chamar_enviar_registros(
     Retorna dict com chaves: Ticket, Erro, Conteudo, Mensagem.
     """
     url = montar_url(entidade, "input")
-    cliente = _criar_cliente(url)
-    try:
+    async with _criar_cliente(url) as cliente:
         resultado = await cliente.service.EnviarRegistros(
             Usuario=usuario,
             Senha=senha,
             Xml=xml,
         )
         return {
-            "Ticket": resultado.Ticket if resultado.Ticket else "",
-            "Erro": resultado.Erro if resultado.Erro else "NAO",
-            "Conteudo": resultado.Conteudo if resultado.Conteudo else "",
-            "Mensagem": resultado.Mensagem if resultado.Mensagem else "",
+            "Ticket": _str(resultado.Ticket),
+            "Erro": _str(resultado.Erro, "NAO"),
+            "Conteudo": _str(resultado.Conteudo),
+            "Mensagem": _str(resultado.Mensagem),
         }
-    finally:
-        await cliente.transport.session.close()
 
 
 async def chamar_obter_schema_xml(
@@ -56,20 +53,17 @@ async def chamar_obter_schema_xml(
     Retorna dict com chaves: Ticket, Erro, Conteudo, Mensagem.
     """
     url = montar_url(entidade, "input")
-    cliente = _criar_cliente(url)
-    try:
+    async with _criar_cliente(url) as cliente:
         resultado = await cliente.service.ObterSchemaXml(
             Usuario=usuario,
             Senha=senha,
         )
         return {
-            "Ticket": resultado.Ticket if resultado.Ticket else "",
-            "Erro": resultado.Erro if resultado.Erro else "NAO",
-            "Conteudo": resultado.Conteudo if resultado.Conteudo else "",
-            "Mensagem": resultado.Mensagem if resultado.Mensagem else "",
+            "Ticket": _str(resultado.Ticket),
+            "Erro": _str(resultado.Erro, "NAO"),
+            "Conteudo": _str(resultado.Conteudo),
+            "Mensagem": _str(resultado.Mensagem),
         }
-    finally:
-        await cliente.transport.session.close()
 
 
 async def chamar_obter_status(
@@ -83,23 +77,20 @@ async def chamar_obter_status(
     Retorna dict com chaves: Ticket, Erro, Conteudo, Status, StatusDescricao, Mensagem.
     """
     url = montar_url(entidade, "input")
-    cliente = _criar_cliente(url)
-    try:
+    async with _criar_cliente(url) as cliente:
         resultado = await cliente.service.ObterStatus(
             Usuario=usuario,
             Senha=senha,
             Ticket=ticket,
         )
         return {
-            "Ticket": resultado.Ticket if resultado.Ticket else "",
-            "Erro": resultado.Erro if resultado.Erro else "NAO",
-            "Conteudo": resultado.Conteudo if resultado.Conteudo else "",
-            "Status": resultado.Status if resultado.Status else "",
-            "StatusDescricao": resultado.StatusDescricao if resultado.StatusDescricao else "",
-            "Mensagem": resultado.Mensagem if resultado.Mensagem else "",
+            "Ticket": _str(resultado.Ticket),
+            "Erro": _str(resultado.Erro, "NAO"),
+            "Conteudo": _str(resultado.Conteudo),
+            "Status": _str(resultado.Status),
+            "StatusDescricao": _str(resultado.StatusDescricao),
+            "Mensagem": _str(resultado.Mensagem),
         }
-    finally:
-        await cliente.transport.session.close()
 
 
 async def chamar_obter_registros(
@@ -114,21 +105,18 @@ async def chamar_obter_registros(
     """
     url = montar_url(entidade, "output")
     flag = "SIM" if completa else "NAO"
-    cliente = _criar_cliente(url)
-    try:
+    async with _criar_cliente(url) as cliente:
         resultado = await cliente.service.ObterRegistros(
             Usuario=usuario,
             Senha=senha,
             Completa=flag,
         )
         return {
-            "Ticket": resultado.Ticket if resultado.Ticket else "",
-            "Erro": resultado.Erro if resultado.Erro else "NAO",
-            "Conteudo": resultado.Conteudo if resultado.Conteudo else "",
-            "Mensagem": resultado.Mensagem if resultado.Mensagem else "",
+            "Ticket": _str(resultado.Ticket),
+            "Erro": _str(resultado.Erro, "NAO"),
+            "Conteudo": _str(resultado.Conteudo),
+            "Mensagem": _str(resultado.Mensagem),
         }
-    finally:
-        await cliente.transport.session.close()
 
 
 async def chamar_gerar_arquivo(
@@ -142,21 +130,25 @@ async def chamar_gerar_arquivo(
     Retorna dict com chaves: Ticket, Erro, Conteudo, Mensagem.
     """
     url = montar_url(entidade, "output")
-    cliente = _criar_cliente(url)
-    try:
+    async with _criar_cliente(url) as cliente:
         resultado = await cliente.service.GerarArquivo(
             Usuario=usuario,
             Senha=senha,
             Ticket=ticket,
         )
         return {
-            "Ticket": resultado.Ticket if resultado.Ticket else "",
-            "Erro": resultado.Erro if resultado.Erro else "NAO",
-            "Conteudo": resultado.Conteudo if resultado.Conteudo else "",
-            "Mensagem": resultado.Mensagem if resultado.Mensagem else "",
+            "Ticket": _str(resultado.Ticket),
+            "Erro": _str(resultado.Erro, "NAO"),
+            "Conteudo": _str(resultado.Conteudo),
+            "Mensagem": _str(resultado.Mensagem),
         }
-    finally:
-        await cliente.transport.session.close()
+
+
+def _str(valor: Any, padrao: str = "") -> str:
+    """Converte valor para string, tratando None e tipos não-string."""
+    if valor is None:
+        return padrao
+    return str(valor)
 
 
 async def chamar_listar_entidades() -> list[dict[str, Any]]:

@@ -1,0 +1,39 @@
+[project]
+name = "ws-claro-gerencial-mcp"
+version = "0.1.0"
+description = "Servidor MCP para integração com os WebServices SOAP do Claro Gerencial (Redeinova)"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+    { name = "Héliton Gurgel" },
+]
+keywords = ["mcp", "claro", "gerencial", "soap", "webservice", "redinova"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+requires-python = ">=3.11"
+dependencies = [
+    "mcp>=1.0.0",
+    "httpx>=0.27.0",
+    "zeep>=4.2.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.scripts]
+ws-claro-gerencial-mcp = "ws_claro_gerencial_mcp.__main__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ws_claro_gerencial_mcp"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"

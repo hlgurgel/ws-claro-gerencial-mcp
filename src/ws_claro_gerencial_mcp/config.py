@@ -22,6 +22,7 @@ URL_BASE_INPUT = os.getenv(
     "CLARO_URL_BASE_INPUT",
     "https://clarogerencial.redeinova.com.br/wsinput",
 )
+URL_SEGMENTO = "wsh" if AMBIENTE == "homologacao" else "ws"
 
 
 @dataclass(frozen=True)
@@ -227,9 +228,12 @@ def obter_entidade(slug: str) -> Entidade:
 
 
 def montar_url(entidade: Entidade, direcao: str) -> str:
-    """Monta a URL completa do WebService para uma entidade e direção (input/output)."""
+    """Monta a URL completa do WebService para uma entidade e direção (input/output).
+
+    Em homologação usa /wsh/; em produção usa /ws/.
+    """
     base = URL_BASE_INPUT if direcao == "input" else URL_BASE_OUTPUT
-    return f"{base}/ws/{entidade.slug}/servico.asmx"
+    return f"{base}/{URL_SEGMENTO}/{entidade.slug}/servico.asmx"
 
 
 STATUS_ENVIO: dict[int, str] = {

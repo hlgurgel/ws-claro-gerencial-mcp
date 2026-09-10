@@ -207,7 +207,7 @@ ENTIDADES: dict[str, Entidade] = {
         tem_input=True,
     ),
     "releituras_iccid": Entidade(
-        slug="releituras_iccid",
+        slug="ReleiturasICCID",
         nome="ReleiturasICCID",
         descricao="Releituras de ICCIDs do PDV",
         tem_output=False,

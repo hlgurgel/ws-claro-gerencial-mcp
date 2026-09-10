@@ -1,0 +1,44 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.hlgurgel/ws-claro-gerencial",
+  "title": "Claro Gerencial",
+  "description": "Servidor MCP para integração com os WebServices SOAP do Claro Gerencial (Redeinova)",
+  "repository": {
+    "url": "https://github.com/hlgurgel/ws-claro-gerencial-mcp",
+    "source": "github"
+  },
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "ws-claro-gerencial-mcp",
+      "version": "0.1.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "CLARO_USUARIO",
+          "description": "Usuário de acesso ao webservice Claro Gerencial",
+          "isRequired": true,
+          "format": "string",
+          "isSecret": false
+        },
+        {
+          "name": "CLARO_SENHA",
+          "description": "Senha de acesso ao webservice Claro Gerencial",
+          "isRequired": true,
+          "format": "string",
+          "isSecret": true
+        },
+        {
+          "name": "CLARO_AMBIENTE",
+          "description": "Ambiente: homologacao ou producao",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": false
+        }
+      ]
+    }
+  ]
+}

@@ -18,11 +18,15 @@ classifiers = [
 ]
 requires-python = ">=3.11"
 dependencies = [
-    "mcp>=1.0.0",
+    "mcp>=1.0.0,<2.0",
     "httpx>=0.27.0",
     "zeep>=4.2.0",
     "python-dotenv>=1.0.0",
 ]
+
+[project.urls]
+Repository = "https://github.com/hlgurgel/ws-claro-gerencial-mcp"
+Issues = "https://github.com/hlgurgel/ws-claro-gerencial-mcp/issues"
 
 [project.scripts]
 ws-claro-gerencial-mcp = "ws_claro_gerencial_mcp.__main__:main"

@@ -1,0 +1,26 @@
+# Smithery configuration file: https://smithery.ai/docs/build/project-config
+
+startCommand:
+  type: stdio
+  commandFunction:
+    # A JS function that produces the CLI command based on the given config to start the MCP on stdio.
+    |-
+    (config) => ({command: 'uvx', args: ['--from', 'ws-claro-gerencial-mcp', 'ws-claro-gerencial-mcp'], env: {CLARO_USUARIO: config.CLARO_USUARIO, CLARO_SENHA: config.CLARO_SENHA, CLARO_AMBIENTE: config.CLARO_AMBIENTE}})
+  configSchema:
+    # JSON Schema defining the configuration options for the MCP.
+    type: object
+    required: [CLARO_USUARIO, CLARO_SENHA]
+    properties:
+      CLARO_USUARIO:
+        type: string
+        description: Usuário de acesso ao webservice Claro Gerencial
+      CLARO_SENHA:
+        type: string
+        description: Senha de acesso ao webservice Claro Gerencial
+      CLARO_AMBIENTE:
+        type: string
+        description: Ambiente (homologacao ou producao)
+  exampleConfig:
+    CLARO_USUARIO: "seu_usuario"
+    CLARO_SENHA: "sua_senha"
+    CLARO_AMBIENTE: "homologacao"
